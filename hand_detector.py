@@ -15,7 +15,7 @@ MODEL_URL  = (
     "hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task"
 )
 
-WRIST = 0  # landmark index used for left-to-right sorting
+WRIST = 0
 
 
 def _ensure_model() -> str:
@@ -27,14 +27,6 @@ def _ensure_model() -> str:
 
 
 class HandDetector:
-    """
-    Detects up to `max_hands` hands per frame using the MediaPipe Tasks API.
-
-    process_and_draw() returns a list of (label, landmarks) tuples sorted
-    left-to-right by wrist X position on screen, where label is 'Left' or 'Right'
-    from the user's perspective (camera flip already accounted for).
-    """
-
     def __init__(self, max_hands: int = 8,
                  detection_confidence: float = 0.7,
                  tracking_confidence: float = 0.5):
@@ -49,11 +41,6 @@ class HandDetector:
         self._t0 = time.monotonic()
 
     def process_and_draw(self, frame_bgr: np.ndarray) -> list:
-        """
-        Returns: [(label, landmarks), ...] sorted by wrist X (left → right).
-        label is 'Left' or 'Right' (user perspective, after mirror correction).
-        landmarks is a list of 21 NormalizedLandmark with .x .y .z attributes.
-        """
         rgb = cv2.cvtColor(frame_bgr, cv2.COLOR_BGR2RGB)
         mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=rgb)
 
@@ -65,7 +52,6 @@ class HandDetector:
 
         hands = []
         for landmarks, handedness in zip(result.hand_landmarks, result.handedness):
-            # Flip label: MediaPipe sees the pre-flip image perspective
             raw_label = handedness[0].category_name
             label = "Right" if raw_label == "Left" else "Left"
             hands.append((label, landmarks))
@@ -91,3 +77,4 @@ class HandDetector:
             r = 6 if i in TIPS else 4
             cv2.circle(frame_bgr, (x, y), r, (255, 255, 255), -1, cv2.LINE_AA)
             cv2.circle(frame_bgr, (x, y), r, (0, 120, 255),   1,  cv2.LINE_AA)
+            #cv2.putText(frame_bgr, str(i), (x, y), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)

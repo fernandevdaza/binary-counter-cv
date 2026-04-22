@@ -1,6 +1,5 @@
 from collections import deque
 
-# Landmark indices for each finger (tip, pip)
 FINGERS = {
     "index":  (8,  6),
     "middle": (12, 10),
@@ -8,7 +7,6 @@ FINGERS = {
     "pinky":  (20, 18),
 }
 
-# Left hand bits go index→pinky, right hand bits go pinky→index
 LEFT_ORDER  = ["index", "middle", "ring",  "pinky"]
 RIGHT_ORDER = ["pinky", "ring",   "middle", "index"]
 
@@ -16,10 +14,6 @@ NOISE_MARGIN = 0.02
 
 
 def get_finger_states(landmarks) -> dict:
-    """
-    Returns {finger_name: 0|1} for the four non-thumb fingers of one hand.
-    Pass None to get all zeros (hand not present).
-    """
     if landmarks is None:
         return {name: 0 for name in LEFT_ORDER}
 
@@ -34,22 +28,12 @@ def get_finger_states(landmarks) -> dict:
 
 
 def hand_bits(label: str, landmarks) -> list[int]:
-    """
-    Return the 4 bits for one hand as a list of ints.
-    Left  → index, middle, ring,  pinky
-    Right → pinky, ring,   middle, index
-    """
     states = get_finger_states(landmarks)
     order = LEFT_ORDER if label == "Left" else RIGHT_ORDER
     return [states[f] for f in order]
 
 
 def build_binary_string(hands: list) -> str:
-    """
-    Build an N*4 bit binary string from a list of (label, landmarks) tuples.
-    Hands must already be sorted left-to-right (done by HandDetector).
-    Returns '' if no hands detected.
-    """
     bits = []
     for label, landmarks in hands:
         bits.extend(hand_bits(label, landmarks))
@@ -61,11 +45,6 @@ def binary_to_decimal(binary_str: str) -> int:
 
 
 class SmoothedBinary:
-    """
-    Only updates the displayed value when the same binary string (same length
-    AND same value) has been seen for `window` consecutive frames.
-    Resets automatically when the number of detected hands changes.
-    """
 
     def __init__(self, window: int = 3):
         self._window = window
