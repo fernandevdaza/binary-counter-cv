@@ -20,9 +20,9 @@ WRIST = 0
 
 def _ensure_model() -> str:
     if not os.path.exists(MODEL_PATH):
-        print(f"[INFO] Downloading hand landmarker model → '{MODEL_PATH}' …")
+        print(f"[INFO] Descargando hand landmarker model → '{MODEL_PATH}' …")
         urllib.request.urlretrieve(MODEL_URL, MODEL_PATH)
-        print("[INFO] Download complete.")
+        print("[INFO] Descarga completada")
     return MODEL_PATH
 
 
@@ -57,7 +57,6 @@ class HandDetector:
             hands.append((label, landmarks))
             self._draw_hand(frame_bgr, landmarks)
 
-        # Sort left-to-right so bit order is visually consistent
         hands.sort(key=lambda h: h[1][WRIST].x)
         return hands
 

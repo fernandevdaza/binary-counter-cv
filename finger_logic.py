@@ -52,10 +52,9 @@ class SmoothedBinary:
         self._stable: str = ""
 
     def update(self, binary_str: str) -> str:
-        # If bit-length changed, flush history so we don't mix lengths
         if self._history and len(self._history[-1]) != len(binary_str):
             self._history.clear()
-            self._stable = binary_str   # show immediately to avoid blank frame
+            self._stable = binary_str
 
         self._history.append(binary_str)
         if len(self._history) == self._window and len(set(self._history)) == 1:

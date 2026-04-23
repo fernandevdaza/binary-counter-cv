@@ -23,12 +23,12 @@ def main() -> None:
     smoother    = SmoothedBinary(window=SMOOTH_WINDOW)
     fps_counter = FPSCounter(alpha=0.1)
 
-    print(f"[INFO] Binary Hand Counter started (max {MAX_HANDS} hands). Q/ESC to quit.")
+    print(f"[INFO] Binary Hand Counter iniciado (max {MAX_HANDS} manos). Presionar Q/ESC para salir.")
 
     while True:
         ok, frame = cap.read()
         if not ok:
-            print("[WARNING] Failed to grab frame — retrying…")
+            print("[WARNING] No se pudo leer el frame")
             continue
 
         frame = cv2.flip(frame, 1)
@@ -50,11 +50,11 @@ def main() -> None:
             decimal_val = binary_to_decimal(stable_binary)
             filename = f"capture_{decimal_val}.png"
             cv2.imwrite(filename, frame)
-            print(f"[INFO] Saved {filename}")
+            print(f"[INFO] Guardado {filename}")
 
     cap.release()
     cv2.destroyAllWindows()
-    print("[INFO] Bye!")
+    print("[INFO] Saliendo!")
 
 
 if __name__ == "__main__":

@@ -35,7 +35,7 @@ class FPSCounter:
 def draw_info_panel(
     frame: np.ndarray,
     stable_binary: str,
-    hands: list,           # [(label, landmarks), ...]  sorted left→right
+    hands: list,
     fps: float,
 ) -> None:
     from finger_logic import get_finger_states
@@ -108,8 +108,7 @@ def open_camera(index: int = 0) -> cv2.VideoCapture:
     cap = cv2.VideoCapture(index)
     if not cap.isOpened():
         raise RuntimeError(
-            f"Cannot open camera (index={index}). "
-            "Check that the device is connected and not in use."
+            f"No se pudo abrir la camara (index={index}). "
         )
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
